@@ -25,7 +25,7 @@
 
 <body>
   <h1>登録</h1>
-  <form method="post" action="/create" th:object="${formModel}">
+  <form method="post" th:action="@{/create}" th:object="${formModel}">
     <input type="hidden" name="id" th:value="*{id}">
     <table border="1">
       <tr>
