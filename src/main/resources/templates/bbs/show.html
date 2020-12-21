@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+
+    .col_name {
+      width: 200px;
+    }
+
+    .col_data {
+      width: 400px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <h1>掲示板</h1>
+  <table border="1" th:object="${formModel}">
+    <tr>
+      <th class="col_name">タイトル</th>
+      <td class="col_data" th:text="*{title}">
+      </td>
+    </tr>
+    <tr>
+      <th>内容</th>
+      <td th:text="*{content}">
+      </td>
+    </tr>
+    <tr>
+      <th>投稿者</th>
+      <td th:text="*{createUser}">
+      </td>
+    </tr>
+  </table>
+  <hr>
+  <form action="/">
+    <input type="submit" value="戻　る" />
+  </form>
+</body>
+
+</html>

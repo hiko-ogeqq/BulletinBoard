@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+
+    .col_name {
+      width: 200px;
+    }
+
+    .col_data {
+      width: 400px;
+    }
+
+    form {
+      display: inline;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>登録</h1>
+  <form method="post" action="/create" th:object="${formModel}">
+    <input type="hidden" name="id" th:value="*{id}">
+    <table border="1">
+      <tr>
+        <th class="col_name">タイトル</th>
+        <td class="col_data">
+          <input type="text" name="title" th:value="*{title}" size="20" maxlength="20" />
+        </td>
+      </tr>
+      <tr>
+        <th>内容</th>
+        <td>
+          <textarea name="content" th:text="*{content}"></textarea>
+        </td>
+      </tr>
+      <tr>
+        <th>投稿者</th>
+        <td>
+          <input type="text" name="createUser" th:value="*{createUser}" size="15" maxlength="15" />
+        </td>
+      </tr>
+    </table>
+    <hr>
+    <input type="submit" value="登　録" />
+  </form>
+  <form action="/">
+    <input type="submit" value="戻　る" />
+  </form>
+</body>
+
+</html>
