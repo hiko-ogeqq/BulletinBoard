@@ -25,7 +25,12 @@
 
 <body>
   <h1>登録</h1>
-  <form method="post" th:action="@{/create}" th:object="${formModel}">
+  <form method="post" th:action="@{/create}" th:object="${bbs}">
+    <ul>
+      <li th:each="error : ${#fields.detailedErrors()}" class="err"
+        th:text="${error.fieldName} +':'+ ${error.message}" />
+    </ul>
+
     <input type="hidden" name="id" th:value="*{id}">
     <table border="1">
       <tr>
@@ -44,6 +49,16 @@
         <th>投稿者</th>
         <td>
           <input type="text" name="createUser" th:value="*{createUser}" size="15" maxlength="15" />
+        </td>
+      </tr>
+      <tr>
+        <th>分類</th>
+        <td><select id="division" name="division">
+            <option value="0"></option>
+            <option th:each="list: ${lists}" th:value="${list.id}" th:text="${list.name}" th:field="*{division}">
+              pulldown
+            </option>
+          </select>
         </td>
       </tr>
     </table>

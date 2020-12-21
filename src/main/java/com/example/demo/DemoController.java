@@ -9,6 +9,8 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,8 @@ public class DemoController {
 
   @Autowired
   BbsRepository repos;
+  @Autowired
+  DivisionRepository d_repos;
 
   /* 一覧画面（初期画面）への遷移 */
   @GetMapping
@@ -36,8 +40,11 @@ public class DemoController {
   ModelAndView add() {
     ModelAndView mav = new ModelAndView();
     BulletinBoard data = new BulletinBoard();
-    mav.addObject("formModel", data);
+    mav.addObject("bbs", data);
     mav.setViewName("bbs/new");
+    // 分類テーブルの読み込み
+    List<Division> list = d_repos.findAll();
+    mav.addObject("lists", list);
     return mav;
   }
 
@@ -46,8 +53,11 @@ public class DemoController {
   ModelAndView edit(@RequestParam int id) {
     ModelAndView mav = new ModelAndView();
     BulletinBoard data = repos.findById(id);
-    mav.addObject("formModel", data);
+    mav.addObject("bbs", data);
     mav.setViewName("bbs/new");
+    // 分類テーブルの読み込み
+    List<Division> list = d_repos.findAll();
+    mav.addObject("lists", list);
     return mav;
   }
 
@@ -55,15 +65,28 @@ public class DemoController {
   ModelAndView show(@RequestParam int id) {
     ModelAndView mav = new ModelAndView();
     BulletinBoard data = repos.findById(id);
-    mav.addObject("formModel", data);
+    mav.addObject("bbs", data);
     mav.setViewName("bbs/show");
+    // 分類テーブルの読み込み
+    Division div = d_repos.findById(data.getDivision());
+    mav.addObject("div", div);
     return mav;
   }
 
   /* 更新処理 */
   @PostMapping("/create")
   @Transactional(readOnly = false)
-  public ModelAndView save(@ModelAttribute("formModel") BulletinBoard bbs) {
+  public ModelAndView save(@ModelAttribute("bbs") @Validated BulletinBoard bbs, BindingResult result) {
+    if (result.hasErrors()) {
+      ModelAndView mav = new ModelAndView();
+      mav.setViewName("bbs/new");
+      // 分類テーブルの読み込み
+      List<Division> list = d_repos.findAll();
+      mav.addObject("lists", list);
+      mav.addObject("bbs", bbs);
+      return mav;
+    }
+    // public ModelAndView save(@ModelAttribute("formModel") BulletinBoard bbs) {
     if (bbs.getId() == 0) {
       bbs.setCreatedDate(new Date());
     } else {
@@ -84,15 +107,49 @@ public class DemoController {
   /* 初期データ作成 */
   @PostConstruct
   public void init() {
-    BulletinBoard bbs1 = new BulletinBoard();
-    bbs1.setContent("島根県松江市浜乃木1-2-3");
-    bbs1.setTitle("TITLE");
     Calendar c = Calendar.getInstance();
     c.add(Calendar.MONTH, -2);
+    // 掲示板初期データの登録
+    BulletinBoard bbs1 = new BulletinBoard();
     bbs1.setCreatedDate(c.getTime());
-    bbs1.setCreateUser("島根　花子");
-
+    bbs1.setTitle("帰社日について");
+    bbs1.setCreateUser("松江　太郎");
+    bbs1.setContent("帰社日は以下の通りです。2018/01/11 2018/02/13");
+    bbs1.setDivision(1);
     repos.saveAndFlush(bbs1);
 
+    bbs1 = new BulletinBoard();
+    bbs1.setCreatedDate(c.getTime());
+    bbs1.setTitle("新入社員歓迎会のお知らせ");
+    bbs1.setCreateUser("松江　太郎");
+    bbs1.setContent("新入社員歓迎会を実施します");
+    bbs1.setDivision(1);
+    repos.saveAndFlush(bbs1);
+
+    // 分類テーブル初期データの登録
+    Division div1 = new Division();
+    div1.setId(1);
+    div1.setName("通達/連絡");
+    d_repos.saveAndFlush(div1);
+
+    div1 = new Division();
+    div1.setId(2);
+    div1.setName("会議開催について");
+    d_repos.saveAndFlush(div1);
+
+    div1 = new Division();
+    div1.setId(3);
+    div1.setName("スケジュール");
+    d_repos.saveAndFlush(div1);
+
+    div1 = new Division();
+    div1.setId(4);
+    div1.setName("イベント");
+    d_repos.saveAndFlush(div1);
+
+    div1 = new Division();
+    div1.setId(5);
+    div1.setName("その他");
+    d_repos.saveAndFlush(div1);
   }
 }

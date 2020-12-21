@@ -16,7 +16,6 @@
     .col_data {
       width: 400px;
     }
-
   </style>
 </head>
 
@@ -37,6 +36,10 @@
       <th>投稿者</th>
       <td th:text="*{createUser}">
       </td>
+    </tr>
+    <tr>
+      <th>分類</th>
+      <td th:text="${div.name}"></td>
     </tr>
   </table>
   <hr>

@@ -9,15 +9,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user")
 @Getter
 @Setter
-public class User {
+@Table(name = "division")
+public class Division {
   @Id
   @Column
-  private String username;
+  private int id;
   @Column
-  private String encodedPassword;
-
-  
+  private String name;
 }
